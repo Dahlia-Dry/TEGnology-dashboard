@@ -34,7 +34,7 @@ def update_graph(value):
     fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='probe 1'))
     fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'probe 2'))
     fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time')
-    return fig,f"Last updated {pd.to_datetime(datetime.datetime.now()).round('1s')}"
+    return fig,f"*Last updated {pd.to_datetime(datetime.datetime.now()).round('1s')}*"
 
 if __name__ == '__main__':
     app.run(debug=True)
