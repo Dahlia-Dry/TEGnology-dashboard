@@ -1,1 +1,1 @@
-web: gunicorn raman-gui:server
+web: gunicorn dashboard:server
