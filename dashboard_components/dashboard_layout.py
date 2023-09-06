@@ -12,5 +12,5 @@ LAYOUT = html.Div([
     #temperature graph
     dcc.Graph(id='temp-graph'),
     dcc.Markdown(id='last_updated',style={'padding':'10','font-size':'10px'}),
-    dcc.Markdown(children=open('assets/tempgraph_description.txt').read(),style={'padding':'10'})
+    dcc.Markdown(children=open('assets/tempgraph_description.md').read(),style={'padding':'10'})
 ])
