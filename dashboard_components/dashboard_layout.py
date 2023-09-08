@@ -16,7 +16,7 @@ LAYOUT = html.Div([
         dcc.Input(id='n_points',type='number',value=100)],className ="d-grid gap-2 d-md-flex",style={'padding':10}),
     dcc.Markdown(id='last_updated',style={'padding':10,'font-size':'10px'}),
     dbc.Row([
-        dbc.Col([html.Img(src='assets/setup.jpeg',style={'width':'100%'})],width=4),
-        dbc.Col([dcc.Markdown(children=open('assets/tempgraph_description.md').read())],width=8)],
+        dbc.Col([html.Img(src='assets/setup.jpeg',style={'width':'100%'})],width=6),
+        dbc.Col([dcc.Markdown(children=open('assets/tempgraph_description.md').read())],width=6)],
         style={'padding':10}),
 ])
