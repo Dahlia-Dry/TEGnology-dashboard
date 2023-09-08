@@ -1,4 +1,4 @@
-from dash import Dash, callback, Output, Input
+from dash import Dash, callback, Output, Input, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pandas as pd
@@ -8,7 +8,6 @@ import datetime
 from dashboard_components.dashboard_layout import *
 
 temp_sensor = tago.Device('16efae85-3236-4c45-a515-fa9dc1f77e90')
-buffer_length = 100
 fontawesome='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
 
@@ -20,9 +19,10 @@ app.layout = LAYOUT
 @callback(
     [Output('temp-graph', 'figure'),
      Output('last_updated','children')],
-    Input('update_interval', 'n_intervals')
+    Input('update_interval', 'n_intervals'),
+    State('n_points','value')
 )
-def update_graph(value):
+def update_graph(value,buffer_length):
     temp1_query= {'qty':buffer_length,'variable':'temperature1'}
     temp2_query= {'qty':buffer_length,'variable':'temperature2'}
     result1 = temp_sensor.find(temp1_query)['result']
