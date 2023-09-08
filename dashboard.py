@@ -32,7 +32,7 @@ def update_graph(value,buffer_length):
     temp2 = [result2[i]['value'] for i in range(len(result2))]
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='air sensor'))
-    fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'pipe sensor'))
+    fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'surface sensor'))
     fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time')
     return fig,f"*Last updated {pd.to_datetime(datetime.datetime.now()).round('1s')}*"
 
