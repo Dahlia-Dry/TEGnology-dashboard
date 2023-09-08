@@ -7,7 +7,8 @@ import datetime
 
 from dashboard_components.dashboard_layout import *
 
-temp_sensor = tago.Device('16efae85-3236-4c45-a515-fa9dc1f77e90')
+temp2_code = open('dashboard_components/device_codes.txt','r').readline().split('=')[1]
+temp_sensor = tago.Device(temp2_code)
 fontawesome='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
 

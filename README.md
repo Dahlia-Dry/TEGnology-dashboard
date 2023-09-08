@@ -20,3 +20,5 @@ You can view the dashboard on a local server by running ```python dashboard.py``
 3. If you have cloned this repository and are pushing to the same branch, the heroku app will already exist and you can skip this step. Otherwise, create a new repository in your GitHub account using ```git init``` and follow the standard procedure to do a first commit. Then, run ```heroku create``` to create a new app.
 4. If you haven't already, commit and push any changes to your GitHub remote using ```git push```. Then, push to the heroku remote using ```git push heroku main```.
 5. If all is well, you should be able to follow the url printed to the terminal to view the deployed app on the web!
+
+## How to add/change devices
