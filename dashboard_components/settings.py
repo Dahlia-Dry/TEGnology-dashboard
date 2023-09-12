@@ -1,1 +1,1 @@
-email_recipients = ['dahlia@tegnology.dk']
+email_recipients = ['dahlia@tegnology.dk','jre@tegnology.dk']
