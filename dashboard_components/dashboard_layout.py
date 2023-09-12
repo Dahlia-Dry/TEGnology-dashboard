@@ -1,6 +1,8 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
+from .contact_form import *
+
 LAYOUT = html.Div([
     #hidden components
     dcc.Interval(id='update_interval',interval=5000),
@@ -19,4 +21,6 @@ LAYOUT = html.Div([
         dbc.Col([html.Img(src='assets/setup.png',style={'width':'100%'})],width=6),
         dbc.Col([dcc.Markdown(children=open('assets/tempgraph_description.md').read())],width=6)],
         style={'padding':10}),
+    contact_form
 ])
+

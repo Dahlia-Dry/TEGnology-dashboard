@@ -2,4 +2,4 @@
 cache/
 .DS_Store
 __pycache__/
-device_codes.txt
+credentials/

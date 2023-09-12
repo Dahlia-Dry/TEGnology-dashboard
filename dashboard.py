@@ -4,10 +4,13 @@ import plotly.graph_objects as go
 import pandas as pd
 import tago
 import datetime
+from dash.exceptions import PreventUpdate
 
 from dashboard_components.dashboard_layout import *
+from dashboard_components.send_email import *
+import dashboard_components.settings as settings
 
-temp2_code = open('dashboard_components/device_codes.txt','r').readline().split('=')[1]
+temp2_code = open('dashboard_components/credentials/device_codes.txt','r').readline().split('=')[1]
 temp_sensor = tago.Device(temp2_code)
 fontawesome='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
@@ -24,8 +27,8 @@ app.layout = LAYOUT
     State('n_points','value')
 )
 def update_graph(value,buffer_length):
-    temp1_query= {'qty':buffer_length,'variable':'temperature1'}
-    temp2_query= {'qty':buffer_length,'variable':'temperature2'}
+    temp1_query= {'qty':buffer_length,'variable':'temp1'}
+    temp2_query= {'qty':buffer_length,'variable':'temp2'}
     result1 = temp_sensor.find(temp1_query)['result']
     result2 = temp_sensor.find(temp2_query)['result']
     times = [pd.to_datetime(result1[i]['time'])+datetime.timedelta(hours=2) for i in range(len(result1))]
@@ -37,5 +40,22 @@ def update_graph(value,buffer_length):
     fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time',hovermode = "x unified")
     return fig,f"*Last updated {pd.to_datetime(datetime.datetime.now()).round('1s')}*"
 
+@app.callback(Output('submit-div', 'children'),
+     Input("button-submit", 'n_clicks'),
+     [State("email-row", 'value'),
+      State("name-row", 'value'),
+      State("message-row", 'value')]
+    )
+def submit_message(n, email, name, message):
+    print('calback triggered')
+    content = f"Subject: New Message from Dashboard!\n\n Sender: {name} [{email}] \n\n {message}"
+    if n>0:
+        status = send_email(settings.email_recipients,content)
+        if status == 'success':
+            return [html.P("Message Sent")]
+        else:
+            return[dbc.Button('Submit', color = 'primary', id='button-submit', n_clicks=0)]
+    else:
+        raise PreventUpdate
 if __name__ == '__main__':
     app.run(debug=True)
