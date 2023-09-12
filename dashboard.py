@@ -5,12 +5,14 @@ import pandas as pd
 import tago
 import datetime
 from dash.exceptions import PreventUpdate
+from decouple import config
 
 from dashboard_components.dashboard_layout import *
 from dashboard_components.send_email import *
 import dashboard_components.settings as settings
 
-temp2_code = open('dashboard_components/credentials/device_codes.txt','r').readline().split('=')[1]
+temp2_code = config('WATTECO_TEMP2')
+print(temp2_code)
 temp_sensor = tago.Device(temp2_code)
 fontawesome='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
@@ -47,7 +49,6 @@ def update_graph(value,buffer_length):
       State("message-row", 'value')]
     )
 def submit_message(n, email, name, message):
-    print('calback triggered')
     content = f"Subject: New Message from Dashboard!\n\n Sender: {name} [{email}] \n\n {message}"
     if n>0:
         status = send_email(settings.email_recipients,content)

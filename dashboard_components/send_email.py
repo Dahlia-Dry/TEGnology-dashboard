@@ -1,10 +1,11 @@
 import ssl
 import smtplib
+import os
+from decouple import config
 
-creds = {l.split('=')[0].strip():l.split('=')[1].strip() for l in open('dashboard_components/credentials/teg_gmail.txt','r').readlines()}
 port = 465  # For SSL
-sender_email = creds['EMAIL']
 receiver_email = 'dahlia.dry24@gmail.com'
+sender_email = 'teg.dashboard@gmail.com'
 message= """Subject: testing
 
 hello :) """
@@ -17,7 +18,7 @@ def send_email(receiver_emails, message):
     context = ssl.create_default_context()       
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-            server.login(creds['EMAIL'], creds['PASSWORD'])
+            server.login(sender_email, config('EMAIL_PASSWORD'))
             for recipient in receiver_emails:
                 server.sendmail(sender_email, recipient, message)
             server.quit()
