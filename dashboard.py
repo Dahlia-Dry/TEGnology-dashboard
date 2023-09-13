@@ -1,4 +1,4 @@
-from dash import Dash, callback, Output, Input, State
+from dash import Dash, callback, Output, Input, State,no_update
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pandas as pd
@@ -24,23 +24,31 @@ app.layout = LAYOUT
 
 @callback(
     [Output('temp-graph', 'figure'),
-     Output('last_updated','children')],
+     Output('last-updated','children'),
+     Output('newest-data','children')],
     Input('update_interval', 'n_intervals'),
-    State('n_points','value')
+    [State('n_points','value'),
+    State('newest-data','children')]
 )
-def update_graph(value,buffer_length):
+def update_graph(value,buffer_length,newest_data):
     temp1_query= {'qty':buffer_length,'variable':'temp1'}
     temp2_query= {'qty':buffer_length,'variable':'temp2'}
     result1 = temp_sensor.find(temp1_query)['result']
     result2 = temp_sensor.find(temp2_query)['result']
     times = [pd.to_datetime(result1[i]['time'])+datetime.timedelta(hours=2) for i in range(len(result1))]
-    temp1 = [result1[i]['value'] for i in range(len(result1))]
-    temp2 = [result2[i]['value'] for i in range(len(result2))]
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='air sensor'))
-    fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'surface sensor'))
-    fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time',hovermode = "x unified")
-    return fig,f"*Last updated {pd.to_datetime(datetime.datetime.now()).round('1s')}*"
+    if ','.join([str(x) for x in times[-5:]]) == newest_data:
+        fig = no_update
+        last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
+    else:
+        newest_data = ','.join([str(x) for x in times[-5:]])
+        temp1 = [result1[i]['value'] for i in range(len(result1))]
+        temp2 = [result2[i]['value'] for i in range(len(result2))]
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='air sensor'))
+        fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'surface sensor'))
+        fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time',hovermode = "x unified")
+        last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
+    return fig,last_updated,newest_data
 
 @app.callback(Output('submit-div', 'children'),
      Input("button-submit", 'n_clicks'),

@@ -6,6 +6,7 @@ from .contact_form import *
 LAYOUT = html.Div([
     #hidden components
     dcc.Interval(id='update_interval',interval=5000),
+    html.Div(id='newest-data',style={'display': 'none'}),
     #header
     dbc.Row([
             dbc.Col([html.Img(src='assets/logo.png',style={'width':'100%'})],width=3),
@@ -16,7 +17,9 @@ LAYOUT = html.Div([
     html.Div([
         dcc.Markdown('Number of data points:'),
         dcc.Input(id='n_points',type='number',value=100)],className ="d-grid gap-2 d-md-flex",style={'padding':10}),
-    dcc.Markdown(id='last_updated',style={'padding':10,'font-size':'10px'}),
+    dbc.Row([
+        dcc.Markdown(id='last-updated',style={'padding':10,'font-size':'10px'}),
+    ],style={'padding':10}),
     dbc.Row([
         dbc.Col([html.Img(src='assets/setup.png',style={'width':'100%'})],width=6),
         dbc.Col([dcc.Markdown(children=open('assets/tempgraph_description.md').read())],width=6)],
