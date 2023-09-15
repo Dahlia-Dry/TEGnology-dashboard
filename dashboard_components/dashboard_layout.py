@@ -6,11 +6,10 @@ from .contact_form import *
 LAYOUT = html.Div([
     #hidden components
     dcc.Interval(id='update_interval',interval=5000),
-    html.Div(id='newest-data',style={'display': 'none'}),
     #header
     dbc.Row([
             dbc.Col([html.Img(src='assets/logo.png',style={'width':'100%'})],width=3),
-            dbc.Col([html.H1(children='Real-time sensing dashboard')],width=9)],
+            dbc.Col([html.H1(children='Autonomous Building Monitoring')],width=9)],
             style={'padding':10}),
     #temperature graph
     dcc.Graph(id='temp-graph'),
