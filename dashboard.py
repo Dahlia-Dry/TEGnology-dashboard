@@ -31,18 +31,26 @@ app.layout = LAYOUT
 def update_graph(value,buffer_length):
     temp1_query= {'qty':buffer_length,'variable':'temp1'}
     temp2_query= {'qty':buffer_length,'variable':'temp2'}
-    result1 = temp_sensor.find(temp1_query)['result']
-    result2 = temp_sensor.find(temp2_query)['result']
-    times = [pd.to_datetime(result1[i]['time'])+datetime.timedelta(hours=2) for i in range(len(result1))]
-    if (datetime.datetime.now(times[-1].tzinfo)-times[-1]).total_seconds() > 60: #check if data is current within the last minute
+    try:
+        result1 = temp_sensor.find(temp1_query)['result']
+        result2 = temp_sensor.find(temp2_query)['result']
+        times = [pd.to_datetime(result1[i]['time'])+datetime.timedelta(hours=2) for i in range(len(result1))]
+        if (datetime.datetime.now(times[-1].tzinfo)-times[-1]).total_seconds() > 60: #check if data is current within the last minute
+            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
+        else:
+            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
+        temp1 = [result1[i]['value'] for i in range(len(result1))]
+        temp2 = [result2[i]['value'] for i in range(len(result2))]
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='air sensor'))
+        fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'surface sensor'))
+    except Exception as e:
+        print(e)
+        fig=go.Figure()
+        df = pd.read_csv('assets/demo-data.csv')
+        fig.add_trace(go.Scatter(x=pd.to_datetime(df['Date and Time'])[-buffer_length:],y=df['temp1'][-buffer_length:],mode='lines',name='air sensor'))
+        fig.add_trace(go.Scatter(x=pd.to_datetime(df['Date and Time'])[-buffer_length:],y=df['temp2'][-buffer_length:],mode='lines',name='surface sensor'))
         last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
-    else:
-        last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
-    temp1 = [result1[i]['value'] for i in range(len(result1))]
-    temp2 = [result2[i]['value'] for i in range(len(result2))]
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=times,y=temp1,mode='lines',name='air sensor'))
-    fig.add_trace(go.Scatter(x=times,y=temp2,mode='lines',name = 'surface sensor'))
     fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time',hovermode = "x unified")
     return fig,last_updated
 
