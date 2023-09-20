@@ -33,7 +33,7 @@ def update_graph(value,buffer_length):
         cur.execute('SELECT * FROM data ORDER BY timestamp DESC')
         results = cur.fetchmany(buffer_length)
         times = [results[i][0]+datetime.timedelta(hours=2) for i in range(len(results))]
-        if (datetime.datetime.now(times[-1].tzinfo)-times[-1]).total_seconds() > 120: #check if data is current within the last 2 minutes
+        if (datetime.datetime.now(times[0].tzinfo)-times[0]).total_seconds() > 120: #check if data is current within the last 2 minutes
             last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
         else:
             last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
