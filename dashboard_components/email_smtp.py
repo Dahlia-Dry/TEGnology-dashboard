@@ -10,7 +10,7 @@ message= """Subject: testing
 
 hello :) """
 
-def send_email(receiver_emails, message):
+def send(receiver_emails, message):
     """This function sends an automated email from the account teg.dashboard@gmail.com
     receiver_emails: list of recipieints
     message: email content. First line should contain Subject: [subject]."""
