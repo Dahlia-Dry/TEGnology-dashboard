@@ -30,9 +30,9 @@ def update_graph(value,buffer_length):
     try:
         conn =  pymysql.connect(host=config('AWS_SQL_ENDPOINT'), user=config('AWS_SQL_USER'), passwd=config('AWS_SQL_PASSWORD'), port=3306, database='watteco_temp_2')
         cur = conn.cursor()
-        cur.execute('SELECT * FROM data')
+        cur.execute('SELECT * FROM data ORDER BY timestamp DESC')
         results = cur.fetchmany(buffer_length)
-        times = [pd.to_datetime(results[i][0])+datetime.timedelta(hours=2) for i in range(len(results))]
+        times = [results[i][0]+datetime.timedelta(hours=2) for i in range(len(results))]
         if (datetime.datetime.now(times[-1].tzinfo)-times[-1]).total_seconds() > 120: #check if data is current within the last 2 minutes
             last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
         else:
