@@ -28,9 +28,9 @@ app.layout = LAYOUT
 )
 def update_graph(value,buffer_length):
     try:
-        conn =  pymysql.connect(host=config('AWS_SQL_ENDPOINT'), user=config('AWS_SQL_USER'), passwd=config('AWS_SQL_PASSWORD'), port=3306, database='watteco_temp_2')
+        conn =  pymysql.connect(host=config('AWS_SQL_ENDPOINT'), user=config('AWS_SQL_USER'), passwd=config('AWS_SQL_PASSWORD'), port=3306, database='sensors')
         cur = conn.cursor()
-        cur.execute('SELECT * FROM data ORDER BY timestamp DESC')
+        cur.execute('SELECT * FROM watteco_temp_2 ORDER BY timestamp DESC')
         results = cur.fetchmany(buffer_length)
         times = [results[i][0]+datetime.timedelta(hours=2) for i in range(len(results))]
         if (datetime.datetime.now(times[0].tzinfo)-times[0]).total_seconds() > 120: #check if data is current within the last 2 minutes
