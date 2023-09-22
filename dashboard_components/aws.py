@@ -8,9 +8,6 @@ def test():
     from decouple import config
     #connect_to_bucket(config('AWS_ACCESS_KEY_ID'),config('AWS_SECRET_ACCESS_KEY'),'watteco-temp2')
 
-    host = 'tegnology-ttn-sensors.cvdmv6p7tm4s.eu-north-1.rds.amazonaws.com'
-    AWS_SQL_USER = 'tegnology'
-    AWS_SQL_PASSWORD = 'TEGnology2023!'
     database = 'sensors'
     region = 'eu-north-1'
     
