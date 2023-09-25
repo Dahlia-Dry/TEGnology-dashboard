@@ -52,6 +52,30 @@ def update_graph(value,buffer_length):
     fig.update_layout(yaxis_title = 'Temperature [C]',xaxis_title='Time',hovermode = "x unified")
     return fig,last_updated
 
+@callback(
+    Output('data-download','data'),
+    Input('download-button', 'n_clicks'),
+    [State('n_points','value')],
+    prevent_initial_call=True
+)
+def download_data(n,buffer_length):
+    try:
+        conn =  pymysql.connect(host=config('AWS_SQL_ENDPOINT'), user=config('AWS_SQL_USER'), passwd=config('AWS_SQL_PASSWORD'), port=3306, database='sensors')
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM watteco_temp_2 ORDER BY timestamp DESC')
+        results = cur.fetchmany(buffer_length)
+        times = [results[i][0]+datetime.timedelta(hours=2) for i in range(len(results))]
+        if (datetime.datetime.now(times[0].tzinfo)-times[0]).total_seconds() > 120: #check if data is current within the last 2 minutes
+            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
+        else:
+            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
+        temp1 = [results[i][1] for i in range(len(results))]
+        temp2 = [results[i][2] for i in range(len(results))]
+        df = pd.DataFrame({'Timestamp':times,'Temperature 1 [C]':temp1,'Temperature 2 [C]':temp2})
+        return dcc.send_data_frame(df.to_csv, 'watteco_temp_2_export.csv')
+    except Exception as e:
+        raise PreventUpdate
+
 @app.callback(Output('submit-div', 'children'),
      Input("button-submit", 'n_clicks'),
      [State("email-row", 'value'),

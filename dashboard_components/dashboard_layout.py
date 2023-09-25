@@ -62,7 +62,9 @@ LAYOUT = html.Div([
     dcc.Graph(id='temp-graph'),
     html.Div([
         dcc.Markdown('Number of data points:'),
-        dcc.Input(id='n_points',type='number',value=100)],className ="d-grid gap-2 d-md-flex",style={'padding':10}),
+        dcc.Input(id='n_points',type='number',value=100),
+        dbc.Button(html.I(className="fa fa-download") ,id='download-button',n_clicks=0,color='secondary'),
+        dcc.Download(id='data-download')],className ="d-grid gap-2 d-md-flex",style={'padding':10}),
     dbc.Row([
         dcc.Markdown(id='last-updated',style={'padding':10,'font-size':'10px'}),
     ],style={'padding':10}),
