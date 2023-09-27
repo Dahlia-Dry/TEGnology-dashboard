@@ -14,8 +14,8 @@ def dump_df():
         conn.commit()
 
 #sql = 'DROP TABLE abb'
-sql = 'CREATE TABLE abb(timestamp datetime, counter int, statusflag int, temp1 int, temp2 int, current1 int, current2 int)'
-cur.execute(sql)
+#sql = 'CREATE TABLE abb(timestamp datetime, counter int, statusflag int, temp1 int, temp2 int, current1 int, current2 int)'
+#cur.execute(sql)
 cur.execute('SELECT * FROM abb ORDER BY timestamp DESC')
 results = cur.fetchmany(10)
 print(results)

@@ -52,7 +52,7 @@ contact_form = html.Div([ dbc.Container([
 
 LAYOUT = html.Div([
     #hidden components
-    dcc.Interval(id='update_interval',interval=5000),
+    dcc.Interval(id='update_interval',interval=30000),
     #header
     dbc.Row([
             dbc.Col([html.A(
@@ -64,7 +64,8 @@ LAYOUT = html.Div([
     dcc.Graph(id='temp-graph'),
     html.Div([
         dcc.Markdown('Number of data points:'),
-        dcc.Input(id='n_points',type='number',value=100),
+        dcc.Input(id='n_points',type='number',value=100,debounce=True),
+        dbc.Tooltip(id='npoints-tooltip',children='Input desired number of data points, then press enter to refresh graph.',target='n_points'),
         dbc.Button(html.I(className="fa fa-download") ,id='download-button',n_clicks=0,color='secondary'),
         dcc.Download(id='data-download')],className ="d-grid gap-2 d-md-flex",style={'padding':10}),
     dbc.Row([

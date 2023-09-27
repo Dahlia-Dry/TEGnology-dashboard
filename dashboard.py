@@ -23,8 +23,8 @@ app.layout = LAYOUT
 @callback(
     [Output('temp-graph', 'figure'),
      Output('last-updated','children')],
-    Input('update_interval', 'n_intervals'),
-    [State('n_points','value')]
+    [Input('update_interval', 'n_intervals'),
+     Input('n_points','value')]
 )
 def update_graph(value,buffer_length):
     try:
