@@ -43,9 +43,13 @@ def prepare_common_attributes():
     return attr
 
 def write(db_name,table_name):
-    df=pd.read_csv('watteco_temp2_backup_10-3.csv')
+    session=boto3.Session(aws_access_key_id=config('AWS_ACCESS_KEY_ID'),
+                                     aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
+                                     region_name='eu-central-1')
+    #df=pd.read_csv('watteco_temp2_backup_10-3.csv')
+    df= pd.read_csv('abb_backup_10-3.csv')
     common_attributes=prepare_common_attributes()
-    records = df_to_records(df,['temp1','temp2'])
+    records = df_to_records(df,['flag','counter','temp1','temp2','current1','current2'])
     write_client = session.client('timestream-write', config=botoConfig(
     read_timeout=20, max_pool_connections=5000, retries={'max_attempts': 10}))
     for i in range(len(records)):
@@ -72,7 +76,7 @@ class TimestreamDB(object):
         q = f"""SELECT * FROM "{self.db_name}"."{self.db_table}" ORDER BY time DESC LIMIT {number}"""
         #print(q)
         query_client = self.session.client('timestream-query')
-        print(query_client.query(QueryString=q))
+        #print(query_client.query(QueryString=q))
         paginator = query_client.get_paginator('query')
         page_iterator=paginator.paginate(QueryString=q)
         rows = []
@@ -89,4 +93,6 @@ class TimestreamDB(object):
         return rows
 
 if __name__ =="__main__":
-    pass
+    #tdb = TimestreamDB('tegnology_demo_sensors','abb')
+    #print(tdb.read(10))
+    write('tegnology_demo_sensors','abb')

@@ -15,8 +15,8 @@ def dump_df_example():
         conn.commit()
 
 def save_backup_example():
-    df = pd.read_sql('SELECT * FROM watteco_temp_2',con=conn)
-    df.to_csv('watteco_temp2_backup_10-3.csv')
+    df = pd.read_sql('SELECT * FROM abb',con=conn)
+    df.to_csv('abb_backup_10-3.csv')
 
 def create_table_example():
     sql = 'CREATE TABLE abb(timestamp datetime, counter int, statusflag int, temp1 int, temp2 int, current1 int, current2 int)'
