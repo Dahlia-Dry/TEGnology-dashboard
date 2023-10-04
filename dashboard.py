@@ -22,7 +22,7 @@ server = app.server
 app.layout = LAYOUT
 timestream_region_name='eu-central-1'
 
-temp2db = aws_ts.TimestreamDB('tegnology_demo_sensors','watteco_temp_2')
+temp2db = aws_ts.TimestreamDB('tegnology_demo_sensors','watteco_temp_2') 
 
 
 @callback(
