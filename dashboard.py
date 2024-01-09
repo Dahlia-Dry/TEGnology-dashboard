@@ -69,19 +69,9 @@ def update_graph(value,buffer_length,sampling_frequency = 180):
 )
 def download_data(n,buffer_length):
     try:
-        conn =  pymysql.connect(host=config('AWS_SQL_ENDPOINT'), user=config('AWS_SQL_USER'), passwd=config('AWS_SQL_PASSWORD'), port=3306, database='sensors')
-        cur = conn.cursor()
-        cur.execute('SELECT * FROM watteco_temp_2 ORDER BY timestamp DESC')
-        results = cur.fetchmany(buffer_length)
-        times = [results[i][0]+datetime.timedelta(hours=2) for i in range(len(results))]
-        if (datetime.datetime.now(times[0].tzinfo)-times[0]).total_seconds() > 120: #check if data is current within the last 2 minutes
-            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is currently recharging its internal buffer; thus the system is in sleep mode and no recent readings are available.*"
-        else:
-            last_updated = f"*{pd.to_datetime(datetime.datetime.now()).round('1s')}: the harvester is powering the sensor and data collection is live*"
-        temp1 = [results[i][1] for i in range(len(results))]
-        temp2 = [results[i][2] for i in range(len(results))]
-        df = pd.DataFrame({'Timestamp':times,'Temperature 1 [C]':temp1,'Temperature 2 [C]':temp2})
-        return dcc.send_data_frame(df.to_csv, 'watteco_temp_2_export.csv')
+        results = pd.DataFrame.from_records(temp2db.read(buffer_length))
+        results['time'] = pd.to_datetime(results['time'])+datetime.timedelta(hours=2)
+        return dcc.send_data_frame(results.to_csv, 'watteco_temp_2_export.csv')
     except Exception as e:
         raise PreventUpdate
 
